@@ -1,0 +1,8 @@
+body{
+    background: url(../resources/background.png);
+}
+#canvasPaint{
+	width: "490";
+	height: "220";
+	border:1px solid #000000;
+}

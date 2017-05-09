@@ -1,0 +1,1 @@
+var sketcher = new atrament(document.getElementById('canvasPaint'));
