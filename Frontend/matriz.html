@@ -13,8 +13,33 @@
         <header>
             <h1 class="card-header">Reconocedor de figuras</h1>
         </header>
-        <div class="col-md-3">
-            <canvas id="canvasPaint"></canvas>
+        <div class="row">
+            <div class="col-md-8 " id="divCanvas">
+                <canvas id="canvasPaint" height="400"></canvas>
+            </div> 
+            <div class="col-md-4">
+                <div class="form-group row">
+                    <label for="lado1" class="col-2 col-form-label">Lado 1</label>
+                    <div class="col-10">
+                        <input class="form-control" type="number" value="0" id="lado1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="lado2" class="col-2 col-form-label">Lado 2</label>
+                    <div class="col-10">
+                        <input class="form-control" type="number" value="0" id="lado2">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="lado3" class="col-2 col-form-label">Lado 3</label>
+                    <div class="col-10">
+                        <input class="form-control" type="number" value="0" id="lado3">
+                    </div>
+                </div>
+                <button class="btn-outline-primary" onclick="crearFigura()" id="crearFigura">Dibujar</button>
+                <button class="btn-outline-primary" onclick="limpiarCanvas()"" id="limpiarCanvas">Limpiar</button>
+                <button class="btn-lg btn-danger">Clasificar</button>
+            </div>
         </div>
         <script src="scripts/atrament.js/dist/atrament.min.js"></script>
         <script type="text/javascript" src='scripts/canvas.js'></script>
