@@ -1,6 +1,4 @@
-var height = $(document.getElementById('divCanvas')).height();
-var width = $(document.getElementById('divCanvas')).width();
-var sketcher = atrament(document.getElementById('canvasPaint'),width,500);
+var sketcher = atrament(document.getElementById('canvasPaint'),500,500);
 
 document.getElementById("crearFigura").onclick = function() {crearFigura()};
 document.getElementById("limpiarCanvas").onclick=function(){limpiar()};
@@ -11,6 +9,7 @@ function crearFigura() {
 	var l1 = $('#lado1').val();
 	var l2 = $('#lado2').val();
 	var l3 = $('#lado3').val();
+	ctx.clearRect(0, 0, 500, 500);
 	if (l1!=0&&l2!=0&&l3!=0) {
 		ctx.beginPath();
 		ctx.moveTo(20, 20);
@@ -36,7 +35,7 @@ function crearFigura() {
 function limpiar(){
 	var c=document.getElementById("canvasPaint");
 	var ctx=c.getContext("2d");
-	ctx.clearRect(0, 0, width, 500);
+	ctx.clearRect(0, 0, 500, 500);
 	location.reload();
 	//sketcher.clear();
 }
