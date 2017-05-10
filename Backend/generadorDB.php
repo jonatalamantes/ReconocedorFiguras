@@ -11,11 +11,11 @@
 
         function __construct()
         {
-            $this->maxWidth  = 100;
-            $this->maxHeight = 100;
+            $this->maxWidth  = 500;
+            $this->maxHeight = 500;
 
-            $this->minWidth  = 20;
-            $this->minHeight = 20;
+            $this->minWidth  = 50;
+            $this->minHeight = 50;
         }
 
         /**
@@ -152,12 +152,15 @@
          * @param  [GD Source] $source [The pointer to the image for transform]
          * @return [Array]             [The matrinx of 0 and 1]
          */
-        function normalizeImage($source = null)
+        function normalizeImage($source = null, $export = null)
         {
             if ($source !== null)
             {
                 $w = imagesx($source);
                 $h = imagesy($source);
+
+                $link = null;
+                $date = null;
 
                 $array2D  = array();
                 $oddUpper = true;
@@ -170,8 +173,10 @@
                     $arrayInter = array();
                     for ($y = 0; $y < $this->maxHeight; $y++)
                     {
-                        $p1 = str_pad(strval($x), 5, "0", STR_PAD_LEFT);
-                        $p2 = str_pad(strval($y), 5, "0", STR_PAD_LEFT);
+                        $rgb = imagecolorat($source, $x, $y);
+                        $r = ($rgb >> 16) & 0xFF;
+                        $g = ($rgb >> 8) & 0xFF;
+                        $b = $rgb & 0xFF;
 
                         if ($x >= $w)
                         {
@@ -190,12 +195,14 @@
 
                             $oddLeft = !$oddLeft;
                         }
-                        else if (imagecolorat($source, $x, $y) > 0)
+                        else if ($r > 200 && $g > 200 && $b > 200) //blanco
                         {
+                            //echo "0";
                             $arrayInter[$y] = intval(0);
                         }
                         else
                         {
+                            //echo "1";
                             $arrayInter[$y] = intval(1);
                         }
                     }
@@ -219,12 +226,33 @@
                     }
                 }
 
+                if ($export !== null)
+                {
+                    $link = fopen($export, "w");
+                    
+                }
+
                 for ($x = 0; $x < $this->maxWidth; $x++)
                 { 
-                    for ($y = 0 ; $y < $this->maxWidth; $y++)
+                    for ($y = 0 ; $y < $this->maxHeight; $y++)
                     { 
+                        if ($export !== null)
+                        {
+                            fwrite($link, $array2D[$y][$x]);
+                        }
+
                         $array1D[] = $array2D[$y][$x];
                     }
+
+                    if ($export !== null)
+                    {
+                        fwrite($link, "\n");
+                    }
+                }
+
+                if ($export !== null)
+                {
+                    fclose($link);
                 }
 
                 return $array1D;
@@ -259,62 +287,63 @@
             $squt = imagecreatefrompng("./square.png");
             $tran = imagecreatefrompng("./triangle.png");
 
-            for ($i = $this->minWidth; $i < $this->maxWidth; $i++)
+            $instance = 1;
+            for ($i = $this->minWidth; $i < $this->maxWidth; $i+=10)
             {
-                for ($j = 0; $j < 360; $j+=10)
+                for ($j = 0; $j < 180; $j+=15)
                 {
                     $color = imagecolorallocate($rect, 255, 255, 255);
 
                     $arrayData = array();
                     $temporal  = imagerotate($rect, $j, $color);
                     $temporal2 = imagescale($temporal, $i);
-                    $this->shortcut($temporal2, $arrayData, "Rect", 0, 0, $i, $i, 1);
 
-                    $matrix = $this->normalizeImage($arrayData[0]["img"]);
-                    $this->matrixToFile($matrix, "1");
+                    $matrix = $this->normalizeImage($temporal2, "db/Rect/$instance");
 
                     imagedestroy($temporal);
                     imagedestroy($temporal2);
+                    $instance++;
                 }
             }
 
-            for ($i = $this->minWidth; $i < $this->maxWidth; $i++)
+            $instance = 1;
+            for ($i = $this->minWidth; $i < $this->maxWidth; $i+=10)
             {
-                for ($j = 0; $j < 360; $j+=10)
+                for ($j = 0; $j < 90; $j+=15)
                 {
                     $color = imagecolorallocate($squt, 255, 255, 255);
 
                     $arrayData = array();
                     $temporal  = imagerotate($squt, $j, $color);
                     $temporal2 = imagescale($temporal, $i);
-                    $this->shortcut($temporal2, $arrayData, "Sqt", 0, 0, $i, $i, 1);
 
-                    $matrix = $this->normalizeImage($arrayData[0]["img"]);
-                    $this->matrixToFile($matrix, "2");
+                    $matrix = $this->normalizeImage($temporal2, "db/Sqt/$instance");
 
                     imagedestroy($temporal);
                     imagedestroy($temporal2);
+                    $instance++;
                 }
             }
 
-            for ($i = $this->minWidth; $i < $this->maxWidth; $i++)
+            $instance = 1;
+            for ($i = $this->minWidth; $i < $this->maxWidth; $i+=10)
             {
-                for ($j = 0; $j < 360; $j+=10)
+                for ($j = 0; $j < 120; $j+=15)
                 {
                     $color = imagecolorallocate($tran, 255, 255, 255);
 
                     $arrayData = array();
                     $temporal  = imagerotate($tran, $j, $color);
                     $temporal2 = imagescale($temporal, $i);
-                    $this->shortcut($temporal2, $arrayData, "tran", 0, 0, $i, $i, 1);
 
-                    $matrix = $this->normalizeImage($arrayData[0]["img"]);
-                    $this->matrixToFile($matrix, "3");
+                    $matrix = $this->normalizeImage($temporal2, "db/Tran/$instance");
 
                     imagedestroy($temporal);
                     imagedestroy($temporal2);
+                    $instance++;
                 }
             }
+
 
             imagedestroy($rect);
             imagedestroy($squt);
