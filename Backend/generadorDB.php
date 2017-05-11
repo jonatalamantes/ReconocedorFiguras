@@ -6,33 +6,62 @@
     {
         private $maxWidth;
         private $maxHeight;
-        private $minWidth;
-        private $minHeight;
 
         function __construct()
         {
-            $this->maxWidth  = 500;
-            $this->maxHeight = 500;
+            $this->maxWidth  = 250;
+            $this->maxHeight = 250;
+        }
 
-            $this->minWidth  = 50;
-            $this->minHeight = 50;
+        /**
+         * Transform the main image to a Binary Image with pixels of 0 and 1
+         */
+        function blackConstrat(&$source)
+        {
+            if ($source == null)
+            {
+                echo "Error al cargar la imagen, no existe el puntero";
+                die;
+            }
+
+            $black = imagecolorallocate($source, 0, 0, 0);
+            $white = imagecolorallocate($source, 255, 255, 255);
+
+            for ($i = 0; $i < $this->actualWidth; $i++)
+            {
+                for ($j = 0; $j < $this->actualHeight; $j++)
+                {
+                    $val = imagecolorat($source, $i, $j);
+
+                    $r = floor($val/(256*256));
+                    $g = floor($val/(256))%256;
+                    $b = $val%256;
+
+                    if ($r < 150 && $g < 150 & $b < 150)
+                    {
+                        imagesetpixel($source, $i, $j, $black);
+                    }
+                    else
+                    {
+                        imagesetpixel($source,  $i, $j, $white);
+                    }
+                }       
+            }
         }
 
         /**
          * Split and cut a part of one image
          * 
          * @param  [GD Resource]  $source    [Pointer of the GD image]
-         * @param  [&Array]       &$dest     [Array in which the result will be added]
-         * @param  string         $pieceName [The label of the Piece to cut]
          * @param  integer        $x1        [The begin X coordinate of the Image]
          * @param  integer        $y1        [The begin Y coordinate of the Image]
          * @param  integer        $x2        [The last  X coordinate of the Image]
          * @param  integer        $y2        [The last  Y coordinate of the Image]
          * @param  integer        $grade     [The Minimum Weight of the Y axes for know that is a word]
          */
-        function shortcut($source = null, &$dest = null, $pieceName = "", $x1 = 0, $y1 = 0, $x2 = 0, $y2 = 0, $grade = 5)
+        function shortcut($source = null, $x1 = 0, $y1 = 0, $x2 = 0, $y2 = 0, $grade = 5)
         {
-            if ($source != null && $dest !== null)
+            if ($source != null)
             {
                 $incX = abs($x1-$x2);
                 $incY = abs($y1-$y2);
@@ -139,8 +168,8 @@
                         $piece = imagecreatetruecolor($incX, $incY);
                         imagecopy($piece, $pieceTemp, 0, 0, $leftLimit, $upperLimit, $incX, $incY);
 
-                        $dest[] = array("attr" => $pieceName, "img" => $piece, "text" => "");
                         imagedestroy($pieceTemp);
+                        return $piece;
                     }
                 }
             }
@@ -264,84 +293,101 @@
             }
         }
 
-        function matrixToFile($matrix = null, $clase = "0")
-        {
-            if ($matrix !== null)
-            {
-                $link = fopen("basedatos$clase.csv", "a+");
-
-                for ($i = 0; $i < sizeof($matrix); $i++)
-                {
-                    fwrite($link, $matrix[$i].",");
-                }
-
-                fwrite($link, $clase);
-                fwrite($link, "\n");
-                fclose($link);
-            }
-        }
-
         function createDB()
         {
             $rect = imagecreatefrompng("./rectangle.png");
             $squt = imagecreatefrompng("./square.png");
             $tran = imagecreatefrompng("./triangle.png");
 
+            $this->blackConstrat($rect);
+            $this->blackConstrat($squt);
+            $this->blackConstrat($tran);
+
+            //imagepng($rect, "db/Rect/Rect.png");
+            //imagepng($squt, "db/Rect/Squt.png");
+            //imagepng($tran, "db/Rect/Tran.png");
+
             $instance = 1;
-            for ($i = $this->minWidth; $i < $this->maxWidth; $i+=10)
+
+            for ($j = 0; $j < 180; $j+=5)
             {
-                for ($j = 0; $j < 180; $j+=15)
+                $array = array();
+                $color = imagecolorallocate($rect, 255, 255, 255);
+
+                $temporal  = imagerotate($rect, $j, $color);
+                $temporal2 = $this->shortcut($temporal, 0, 0, imagesx($temporal), imagesy($temporal), 1);
+                
+                if (imagesx($temporal2) > imagesy($temporal2))
                 {
-                    $color = imagecolorallocate($rect, 255, 255, 255);
-
-                    $arrayData = array();
-                    $temporal  = imagerotate($rect, $j, $color);
-                    $temporal2 = imagescale($temporal, $i);
-
-                    $matrix = $this->normalizeImage($temporal2, "db/Rect/$instance");
-
-                    imagedestroy($temporal);
-                    imagedestroy($temporal2);
-                    $instance++;
+                    $temporal1 = imagescale($temporal2, $this->maxWidth);
                 }
+                else
+                {
+                    $ratio = imagesx($temporal2)/imagesy($temporal2);
+                    $temporal1 = imagescale($temporal2, $ratio*$this->maxWidth);
+                }
+
+                $matrix = $this->normalizeImage($temporal1, "db/Rect/$instance");
+
+                imagedestroy($temporal);
+                imagedestroy($temporal2);
+                imagedestroy($temporal1);
+                $instance++;
             }
 
             $instance = 1;
-            for ($i = $this->minWidth; $i < $this->maxWidth; $i+=10)
+
+            for ($j = 0; $j < 90; $j+=5)
             {
-                for ($j = 0; $j < 90; $j+=15)
+                $array = array();
+                $color = imagecolorallocate($squt, 255, 255, 255);
+
+                $temporal  = imagerotate($squt, $j, $color);
+                $temporal2 = $this->shortcut($temporal, 0, 0, imagesx($temporal), imagesy($temporal), 1);
+                
+                if (imagesx($temporal2) > imagesy($temporal2))
                 {
-                    $color = imagecolorallocate($squt, 255, 255, 255);
-
-                    $arrayData = array();
-                    $temporal  = imagerotate($squt, $j, $color);
-                    $temporal2 = imagescale($temporal, $i);
-
-                    $matrix = $this->normalizeImage($temporal2, "db/Sqt/$instance");
-
-                    imagedestroy($temporal);
-                    imagedestroy($temporal2);
-                    $instance++;
+                    $temporal1 = imagescale($temporal2, $this->maxWidth);
                 }
+                else
+                {
+                    $ratio = imagesx($temporal2)/imagesy($temporal2);
+                    $temporal1 = imagescale($temporal2, $ratio*$this->maxWidth);
+                }
+
+                $matrix = $this->normalizeImage($temporal1, "db/Sqt/$instance");
+
+                imagedestroy($temporal);
+                imagedestroy($temporal2);
+                imagedestroy($temporal1);
+                $instance++;
             }
 
             $instance = 1;
-            for ($i = $this->minWidth; $i < $this->maxWidth; $i+=10)
+            for ($j = 0; $j < 120; $j+=5)
             {
-                for ($j = 0; $j < 120; $j+=15)
+                $array = array();
+                $color = imagecolorallocate($tran, 255, 255, 255);
+
+                $temporal  = imagerotate($tran, $j, $color);
+                $temporal2 = $this->shortcut($temporal, 0, 0, imagesx($temporal), imagesy($temporal), 1);
+                
+                if (imagesx($temporal2) > imagesy($temporal2))
                 {
-                    $color = imagecolorallocate($tran, 255, 255, 255);
-
-                    $arrayData = array();
-                    $temporal  = imagerotate($tran, $j, $color);
-                    $temporal2 = imagescale($temporal, $i);
-
-                    $matrix = $this->normalizeImage($temporal2, "db/Tran/$instance");
-
-                    imagedestroy($temporal);
-                    imagedestroy($temporal2);
-                    $instance++;
+                    $temporal1 = imagescale($temporal2, $this->maxWidth);
                 }
+                else
+                {
+                    $ratio = imagesx($temporal2)/imagesy($temporal2);
+                    $temporal1 = imagescale($temporal2, $ratio*$this->maxWidth);
+                }
+
+                $matrix = $this->normalizeImage($temporal1, "db/Tran/$instance");
+
+                imagedestroy($temporal);
+                imagedestroy($temporal2);
+                imagedestroy($temporal1);
+                $instance++;
             }
 
 
