@@ -1,8 +1,10 @@
 from svmutil import *
 
+#Lectura del modelo
 m = svm_load_model('./svm_figuras.model');
 
-archivo = '../db/Tran/10'
+#Lectura del archivo con los datos
+archivo = 'input.dat'
 file = open(archivo, "r")
 instancia = []
 while True:
@@ -14,9 +16,10 @@ while True:
 
     instancia.append(int(letra))
 
-print "Leida instancia"
-p_label, p_acc, p_val = svm_predict([3], [instancia], m)
+#Prediccion del datos
+p_label, p_acc, p_val = svm_predict([0], [instancia], m)
 
-print p_label
-print p_acc
-print p_val
+#Guardar el datos en un archivo
+f = open("output.dat", 'w')
+f.write(str(p_label[0]))
+f.close()

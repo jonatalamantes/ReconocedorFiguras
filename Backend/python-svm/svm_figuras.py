@@ -61,7 +61,9 @@ for i in range(24):
         entradasT.append(instancia);
         salidasT.append(3);
 
-"""cantPartes = 10
+
+#Cross Validation a mano
+cantPartes = 10
 cantPorParte = len(salidasT)/cantPartes
 precisiones = []
                    
@@ -81,19 +83,31 @@ for posPrueba in range(cantPartes):
     del entradasEntre[posInicioPrueba:posFinPrueba]
     del salidasEntre[posInicioPrueba:posFinPrueba]
 
+    #Prediccion de los datos con solo el accuracity
     prob = svm_problem(salidasEntre,entradasEntre)
-    m = svm_train(prob, '-s 0 -t 2')   
+    m = svm_train(prob, '-s 0 -t 2 -q')   
     p_label, p_acc, p_val = svm_predict(salidasPrueba, entradasPrueba, m)
+    print "Iteracion " + str(posPrueba) + ": " + str(p_acc[0])
     precisiones.append(p_acc[0])
 
 precisionFinal = sum(precisiones)/len(precisiones)
-print "Precision Final: " + str(precisionFinal) """
+print "Precision Final: " + str(precisionFinal) 
 
+
+"""
+#Cross Validation de la libreria y creacion del modelo
 prob  = svm_problem(salidasT, entradasT)
-svm_train(prob, '-s 0 -t 2 -v 10')
-model = svm_train(prob, '-s 0 -t 2')
-
+#svm_train(prob, '-s 0 -t 2 -v 2') 
+model = svm_train(prob, '-s 0 -t 2 -q') 
 svm_save_model('./svm_figuras.model', model);
+"""
+
+"""
+#Prueba sobre todas las intancias en el clasificador
+m = svm_load_model('./svm_figuras.model');
+p_label, p_acc, p_val = svm_predict(salidasT, entradasT, m)
+print p_acc 
+"""
 
 #Ponemos la bandera del comienzo
 print ""
