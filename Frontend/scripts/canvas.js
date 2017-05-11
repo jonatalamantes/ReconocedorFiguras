@@ -1,4 +1,7 @@
 var sketcher = atrament(document.getElementById('canvasPaint'),500,500);
+sketcher.weight = 2;
+sketcher.smoothing = false;
+sketcher.adaptiveStroke = false;
 
 document.getElementById("crearFigura").onclick = function() {crearFigura()};
 document.getElementById("limpiarCanvas").onclick=function(){limpiar()};
@@ -40,3 +43,28 @@ function limpiar(){
 	//sketcher.clear();
 }
 
+function clasificar()
+{
+	$("#limpiarCanvas").attr("disabled", true);
+	$("#clasificarCanvas").attr("disabled", true);
+
+	var img = sketcher.toImage();
+
+	$.ajax({
+       url: '../Backend/clasificarFigura.php',
+       data: {image: img},
+       type: "POST"
+	})
+	.done(function( data, textStatus, jqXHR ) 
+    {
+		$("#limpiarCanvas").attr("disabled", false);
+		$("#clasificarCanvas").attr("disabled", false);
+
+		console.log(data)
+    })
+    .fail(function( jqXHR, textStatus, errorThrown ) 
+    {
+		$("#limpiarCanvas").attr("disabled", false);
+		$("#clasificarCanvas").attr("disabled", false);
+    });
+}

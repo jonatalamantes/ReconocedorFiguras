@@ -27,17 +27,19 @@
             $black = imagecolorallocate($source, 0, 0, 0);
             $white = imagecolorallocate($source, 255, 255, 255);
 
-            for ($i = 0; $i < $this->actualWidth; $i++)
+            for ($i = 0; $i < imagesx($source); $i++)
             {
-                for ($j = 0; $j < $this->actualHeight; $j++)
+                for ($j = 0; $j < imagesy($source); $j++)
                 {
                     $val = imagecolorat($source, $i, $j);
+                    $colors = imagecolorsforindex($source, $val);
 
-                    $r = floor($val/(256*256));
-                    $g = floor($val/(256))%256;
-                    $b = $val%256;
+                    $r = $colors["red"];
+                    $g = $colors["green"];
+                    $b = $colors["blue"];
+                    $a = $colors["alpha"];
 
-                    if ($r < 150 && $g < 150 & $b < 150)
+                    if ($r < 150 && $g < 150 & $b < 150 && $a < 50)
                     {
                         imagesetpixel($source, $i, $j, $black);
                     }
@@ -396,7 +398,54 @@
             imagedestroy($squt);
             imagedestroy($tran);
         }
+    
+        /**
+         * Gets the value of maxWidth.
+         *
+         * @return mixed
+         */
+        public function getMaxWidth()
+        {
+            return $this->maxWidth;
+        }
 
+        /**
+         * Sets the value of maxWidth.
+         *
+         * @param mixed $maxWidth the max width
+         *
+         * @return self
+         */
+        public function setMaxWidth($maxWidth)
+        {
+            $this->maxWidth = $maxWidth;
+
+            return $this;
+        }
+
+        /**
+         * Gets the value of maxHeight.
+         *
+         * @return mixed
+         */
+        public function getMaxHeight()
+        {
+            return $this->maxHeight;
+        }
+
+        /**
+         * Sets the value of maxHeight.
+         *
+         * @param mixed $maxHeight the max height
+         *
+         * @return self
+         */
+        public function setMaxHeight($maxHeight)
+        {
+            $this->maxHeight = $maxHeight;
+
+            return $this;
+        }
     }
 
  ?>

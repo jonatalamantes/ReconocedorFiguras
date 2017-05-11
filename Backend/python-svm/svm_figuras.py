@@ -23,7 +23,7 @@ for i in range(36):
 
         instancia.append(int(letra))
 
-    for i in range(10):
+    for i in range(5):
         entradasT.append(instancia);
         salidasT.append(1);
 
@@ -40,7 +40,7 @@ for i in range(18):
 
         instancia.append(int(letra))
 
-    for i in range(10):
+    for i in range(5):
         entradasT.append(instancia);
         salidasT.append(2);
 
@@ -57,11 +57,11 @@ for i in range(24):
 
         instancia.append(int(letra))
 
-    for i in range(10):
+    for i in range(5):
         entradasT.append(instancia);
         salidasT.append(3);
 
-
+"""
 #Cross Validation a mano
 cantPartes = 10
 cantPorParte = len(salidasT)/cantPartes
@@ -92,22 +92,22 @@ for posPrueba in range(cantPartes):
 
 precisionFinal = sum(precisiones)/len(precisiones)
 print "Precision Final: " + str(precisionFinal) 
-
+"""
 
 """
 #Cross Validation de la libreria y creacion del modelo
 prob  = svm_problem(salidasT, entradasT)
 #svm_train(prob, '-s 0 -t 2 -v 2') 
 model = svm_train(prob, '-s 0 -t 2 -q') 
-svm_save_model('./svm_figuras.model', model);
+svm_save_model('./svm_figuras.model', model); 
 """
 
-"""
+
 #Prueba sobre todas las intancias en el clasificador
 m = svm_load_model('./svm_figuras.model');
 p_label, p_acc, p_val = svm_predict(salidasT, entradasT, m)
 print p_acc 
-"""
+
 
 #Ponemos la bandera del comienzo
 print ""
