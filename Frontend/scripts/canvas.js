@@ -1,7 +1,6 @@
 var sketcher = atrament(document.getElementById('canvasPaint'),500,500);
-sketcher.weight = 2;
+sketcher.weight = 3;
 sketcher.smoothing = false;
-sketcher.adaptiveStroke = false;
 
 document.getElementById("crearFigura").onclick = function() {crearFigura()};
 document.getElementById("limpiarCanvas").onclick=function(){limpiar()};
@@ -60,7 +59,16 @@ function clasificar()
 		$("#limpiarCanvas").attr("disabled", false);
 		$("#clasificarCanvas").attr("disabled", false);
 
-		console.log(data)
+		console.log(data);
+
+		if (data.indexOf("arning") >= 0)
+		{
+			alert("Dibuje algo primero");	
+		}
+		else
+		{
+			alert(data);
+		}	
     })
     .fail(function( jqXHR, textStatus, errorThrown ) 
     {

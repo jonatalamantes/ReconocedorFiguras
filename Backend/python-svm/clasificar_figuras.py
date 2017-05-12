@@ -19,9 +19,9 @@ while True:
 #Prediccion del datos
 p_label, p_acc, p_val = svm_predict([0], [instancia], m)
 
-print p_label
+print p_label[0]
 print p_acc
 print p_val
 
 #Guardar el datos en un archivo
-exit(int(p_label))
+exit(int(p_label[0]))

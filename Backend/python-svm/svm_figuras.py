@@ -23,7 +23,7 @@ for i in range(36):
 
         instancia.append(int(letra))
 
-    for i in range(5):
+    for i in range(10):
         entradasT.append(instancia);
         salidasT.append(1);
 
@@ -40,7 +40,7 @@ for i in range(18):
 
         instancia.append(int(letra))
 
-    for i in range(5):
+    for i in range(10):
         entradasT.append(instancia);
         salidasT.append(2);
 
@@ -57,7 +57,7 @@ for i in range(24):
 
         instancia.append(int(letra))
 
-    for i in range(5):
+    for i in range(10):
         entradasT.append(instancia);
         salidasT.append(3);
 
@@ -102,12 +102,12 @@ model = svm_train(prob, '-s 0 -t 2 -q')
 svm_save_model('./svm_figuras.model', model); 
 """
 
-
+"""
 #Prueba sobre todas las intancias en el clasificador
 m = svm_load_model('./svm_figuras.model');
 p_label, p_acc, p_val = svm_predict(salidasT, entradasT, m)
 print p_acc 
-
+"""
 
 #Ponemos la bandera del comienzo
 print ""

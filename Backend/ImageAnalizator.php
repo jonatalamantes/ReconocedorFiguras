@@ -295,9 +295,62 @@
             }
         }
 
-        function createImage($byteString = "")
+        function fillFigure(&$source)
         {
-            
+            if ($source !== null)
+            {
+                $black = imagecolorallocate($source, 0, 0, 0);
+                $white = imagecolorallocate($source, 255, 255, 255);
+
+                $maxX = imagesx($source);
+                $maxY = imagesy($source);
+
+                for ($y = 0; $y < $maxY; $y++)
+                {
+                    //Search the Leaf Limit
+                    $left  = 0;
+
+                    for ($left = 0; $left < $maxX; $left++)
+                    {
+                        $val = imagecolorat($source, $left, $y);
+                        $colors = imagecolorsforindex($source, $val);
+
+                        $r = $colors["red"];
+                        $g = $colors["green"];
+                        $b = $colors["blue"];
+                        $a = $colors["alpha"];
+
+                        if ($r < 150 && $b < 150 && $g < 150)
+                        {
+                            break;
+                        }
+                    }
+
+                    //Search the right Limit
+                    $right = 0;
+
+                    for ($right = $maxX-1; $right >= 0; $right--)
+                    {
+                        $val = imagecolorat($source, $right, $y);
+                        $colors = imagecolorsforindex($source, $val);
+
+                        $r = $colors["red"];
+                        $g = $colors["green"];
+                        $b = $colors["blue"];
+                        $a = $colors["alpha"];
+
+                        if ($r < 150 && $b < 150 && $g < 150)
+                        {
+                            break;
+                        }
+                    }
+
+                    for ($i = $left; $i < $right; $i++)
+                    {
+                        imagesetpixel($source, $i, $y, $black);
+                    }
+                }
+            }
         }
 
         function createDB()

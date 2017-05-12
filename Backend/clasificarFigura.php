@@ -24,7 +24,19 @@
     //To Binary Image
     $an->blackConstrat($img);
     $temporal2 = $an->shortcut($img, 0, 0, imagesx($img), imagesy($img), 1);
-    $temporal1 = imagescale($temporal2, $an->getMaxWidth(), $an->getMaxHeight());
+    $an->fillFigure($temporal2);
+
+    if (imagesx($temporal2) > imagesy($temporal2))
+    {
+        $temporal1 = imagescale($temporal2, $an->getMaxWidth());
+    }
+    else
+    {
+        $ratio = imagesx($temporal2)/imagesy($temporal2);
+        $temporal1 = imagescale($temporal2, $ratio*$an->getMaxWidth());
+    }
+
+    imagepng($temporal1, "temp.png");
 
     //Create the training File
     $an->normalizeImage($temporal1, "python-svm/input.dat");
@@ -37,7 +49,6 @@
     $out = 0;
 
     exec("python python-svm/clasificar_figuras.py", $salida, $out);
-    var_dump($salida);
     
     //Devolver el resultado de la clasificacion
     if ($out == 1)
