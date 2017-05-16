@@ -8,31 +8,36 @@ document.getElementById("limpiarCanvas").onclick=function(){limpiar()};
 function crearFigura() {
 	var c=document.getElementById("canvasPaint");
 	var ctx=c.getContext("2d");
-	var l1 = $('#lado1').val();
-	var l2 = $('#lado2').val();
-	var l3 = $('#lado3').val();
-	if (l1!=0&&l2!=0&&l3!=0) {
+	var p1x = $('#punto1x').val();
+	var p1y = $('#punto1y').val();
+	var p2x = $('#punto2x').val();
+	var p2y = $('#punto2y').val();
+	var p3x = $('#punto3x').val();
+	var p3y = $('#punto3y').val();
+	var p4x = $('#punto4x').val();
+	var p4y = $('#punto4y').val();
+
+	ctx.lineWidth = 4;
+	ctx.strokeStyle = '#000000';
+	//ctx.clearRect(0, 0, 500, 500);
+	if (p4x==0&&p4y==0) {
 		ctx.beginPath();
-		ctx.moveTo(20, 20);
-		ctx.lineTo(20, l1);
-		ctx.lineTo(l1, l2);
+		ctx.moveTo(p1x, p1y);
+		ctx.lineTo(p2x, p2y);
+		ctx.lineTo(p3x, p3y);
 		ctx.closePath();
 		 
-		// the outline
-		ctx.lineWidth = 4;
-		ctx.strokeStyle = '#666666';
+		// the outline	
 		ctx.stroke();
 	} 
-	else if (l1!=0&&l2!=0&&l3==0) {
-		ctx.rect(20,20,l2,l1);
-		ctx.lineWidth = 4;
-		ctx.strokeStyle = '#666666';
-		ctx.stroke();
-	}
-	else if (l1!=0&&l2==0&&l3==0) {
-		ctx.rect(20,20,l1,l1);
-		ctx.lineWidth = 4;
-		ctx.strokeStyle = '#666666';
+	else if (p4x!=0&&p4y!=0) {
+		ctx.beginPath();
+		ctx.moveTo(p1x, p1y);
+		ctx.lineTo(p2x, p2y);
+		ctx.lineTo(p3x, p3y);
+		ctx.lineTo(p4x, p4y);
+		ctx.closePath();
+
 		ctx.stroke();
 	}
 }
